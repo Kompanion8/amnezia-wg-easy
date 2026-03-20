@@ -48,14 +48,24 @@ module.exports.DICEBEAR_TYPE = process.env.DICEBEAR_TYPE || false;
 module.exports.USE_GRAVATAR = process.env.USE_GRAVATAR || false;
 
 const getRandomInt = (min, max) => min + Math.floor(Math.random() * (max - min));
-const getRandomJunkSize = () => getRandomInt(15, 150);
+const getRandomJunkSize = (min = 15, max = 150, exclude = []) => {
+    let v;
+    do { 
+        v = getRandomInt(min, max); 
+    } while (exclude.includes(v));
+    return v;
+};
 const getRandomHeader = () => getRandomInt(1, 2_147_483_647);
 
 module.exports.JC = process.env.JC || getRandomInt(3, 10);
 module.exports.JMIN = process.env.JMIN || 50;
 module.exports.JMAX = process.env.JMAX || 1000;
 module.exports.S1 = process.env.S1 || getRandomJunkSize();
-module.exports.S2 = process.env.S2 || getRandomJunkSize();
+do { 
+    module.exports.S2 = process.env.S2 || getRandomJunkSize(15, 150, [module.exports.S1, module.exports.S1 + 56]); 
+} while (module.exports.S2 === module.exports.S1 + 56); // S1 + 56 ≠ S2
+module.exports.S3 = process.env.S3 || getRandomJunkSize(15, 150, [module.exports.S1, module.exports.S2]);
+module.exports.S4 = process.env.S4 || getRandomJunkSize(15, 32); // S4 ≤ 32
 module.exports.H1 = process.env.H1 || getRandomHeader();
 module.exports.H2 = process.env.H2 || getRandomHeader();
 module.exports.H3 = process.env.H3 || getRandomHeader();
