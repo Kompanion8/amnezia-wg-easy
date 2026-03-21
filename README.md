@@ -1,6 +1,6 @@
 # AmnewziaWG Easy
 
-You have found the easiest way to install & manage WireGuard on any Linux host!
+You have found the easiest way to install & manage AmneziaWG on any Linux host!
 
 <p align="center">
   <img src="./assets/screenshot.png" width="802" />
@@ -62,7 +62,7 @@ To automatically install & run wg-easy, simply run:
   --sysctl="net.ipv4.ip_forward=1" \
   --device=/dev/net/tun:/dev/net/tun \
   --restart unless-stopped \
-  ghcr.io/w0rng/amnezia-wg-easy
+  ghcr.io/Kompanion8/amnezia-wg-easy
 ```
 
 > 💡 Replace `YOUR_SERVER_IP` with your WAN IP, or a Dynamic DNS hostname.
@@ -112,8 +112,10 @@ These options can be configured by setting environment variables using `-e KEY="
 | `JC`                          | `random`          | `5`                            | Junk packet count — number of packets with random data that are sent before the start of the session.                                                                                                                    |
 | `JMIN`                        | `50`              | `25`                           | Junk packet minimum size — minimum packet size for Junk packet. That is, all randomly generated packets will have a size no smaller than Jmin.                                                                           |
 | `JMAX`                        | `1000`            | `250`                          | Junk packet maximum size — maximum size for Junk packets.                                                                                                                                                                |
-| `S1`                          | `random`          | `75`                           | Init packet junk size — the size of random data that will be added to the init packet, the size of which is initially fixed.                                                                                             |
-| `S2`                          | `random`          | `75`                           | Response packet junk size — the size of random data that will be added to the response packet, the size of which is initially fixed.                                                                                     |
+| `S1` | `random` | `75` | Init packet junk size — defines the size of random padding added to the initial handshake packet. This helps obscure the fixed size of the WireGuard initiation message. |
+| `S2` | `random` | `75` | Response packet junk size — defines the size of random padding added to the handshake response packet. Must not satisfy the condition `S2 = S1 + 56` to avoid protocol fingerprinting. |
+| `S3` | `random` | `75` | Secondary handshake junk size — adds padding to subsequent handshake-related packets after the initial exchange. Used to break predictable packet size patterns across the handshake sequence. |
+| `S4` | `random (15–32)` | `21` | Small packet junk size — defines padding for smaller control packets (e.g., keepalive). Limited to a small range to avoid excessive overhead while still preventing traffic analysis. |
 | `H1`                          | `random`          | `1234567891`                   | Init packet magic header — the header of the first byte of the handshake. Must be < uint_max.                                                                                                                            |
 | `H2`                          | `random`          | `1234567892`                   | Response packet magic header — header of the first byte of the handshake response. Must be < uint_max.                                                                                                                   |
 | `H3`                          | `random`          | `1234567893`                   | Underload packet magic header — UnderLoad packet header. Must be < uint_max.                                                                                                                                             |
@@ -128,7 +130,7 @@ To update to the latest version, simply run:
 ```bash
 docker stop amnezia-wg-easy
 docker rm amnezia-wg-easy
-docker pull ghcr.io/w0rng/amnezia-wg-easy
+docker pull ghcr.io/Kompanion8/amnezia-wg-easy
 ```
 
 And then run the `docker run -d \ ...` command above again.
@@ -136,4 +138,5 @@ And then run the `docker run -d \ ...` command above again.
 ## Thanks
 
 Based on [wg-easy](https://github.com/wg-easy/wg-easy) by Emile Nijssen.  
-Use integrations with AmneziaWg from [amnezia-wg-easy](https://github.com/spcfox/amnezia-wg-easy) by Viktor Yudov.
+Use integrations with AmneziaWg from [amnezia-wg-easy](https://github.com/spcfox/amnezia-wg-easy) by Viktor Yudov.  
+This project is a fork of [amnezia-wg-easy](https://github.com/w0rng/amnezia-wg-easy) by w0rng.

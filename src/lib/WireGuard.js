@@ -31,6 +31,8 @@ const {
   JMAX,
   S1,
   S2,
+  S3,
+  S4,
   H1,
   H2,
   H3,
@@ -68,6 +70,8 @@ module.exports = class WireGuard {
             jmax: JMAX,
             s1: S1,
             s2: S2,
+            s3: S3,
+            s4: S4,
             h1: H1,
             h2: H2,
             h3: H3,
@@ -89,8 +93,8 @@ module.exports = class WireGuard {
       const config = await this.__buildConfig();
 
       await this.__saveConfig(config);
-      await Util.exec('wg-quick down wg0').catch(() => {});
-      await Util.exec('wg-quick up wg0').catch((err) => {
+      await Util.exec('awg-quick down /etc/wireguard/wg0.conf').catch(() => {});
+      await Util.exec('awg-quick up /etc/wireguard/wg0.conf').catch((err) => {
         if (err && err.message && err.message.includes('Cannot find device "wg0"')) {
           throw new Error('WireGuard exited with the error: Cannot find device "wg0"\nThis usually means that your host\'s kernel does not support WireGuard!');
         }
@@ -132,6 +136,8 @@ Jmin = ${config.server.jmin}
 Jmax = ${config.server.jmax}
 S1 = ${config.server.s1}
 S2 = ${config.server.s2}
+S3 = ${config.server.s3}
+S4 = ${config.server.s4}
 H1 = ${config.server.h1}
 H2 = ${config.server.h2}
 H3 = ${config.server.h3}
@@ -162,7 +168,7 @@ ${client.preSharedKey ? `PresharedKey = ${client.preSharedKey}\n` : ''
 
   async __syncConfig() {
     debug('Config syncing...');
-    await Util.exec('wg syncconf wg0 <(wg-quick strip wg0)');
+    await Util.exec('wg syncconf wg0 <(wg-quick strip /etc/wireguard/wg0.conf)');
     debug('Config synced.');
   }
 
@@ -250,6 +256,8 @@ Jmin = ${config.server.jmin}
 Jmax = ${config.server.jmax}
 S1 = ${config.server.s1}
 S2 = ${config.server.s2}
+S3 = ${config.server.s3}
+S4 = ${config.server.s4}
 H1 = ${config.server.h1}
 H2 = ${config.server.h2}
 H3 = ${config.server.h3}
